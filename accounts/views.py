@@ -29,6 +29,9 @@ class UserRegisterView(generics.CreateAPIView):
     """
     queryset = CustomUser.objects.all()
     serializer_class = UserRegisterSerializer
+    # 清空 authentication_classes：避免使用者帶著過期/無效的舊 token 來註冊時，
+    # JWTAuthentication 先一步拋 401，導致公開端點反而進不去。
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
@@ -116,6 +119,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     }
     """
     serializer_class = CustomTokenObtainPairSerializer
+    # 同 UserRegisterView：登入本身就是「還沒有 token」的場景，
+    # 不該因為 header 裡殘留的過期 token 而被 JWTAuthentication 先擋下。
+    authentication_classes = []
+    permission_classes = [AllowAny]
 
 
 class LogoutView(APIView):
