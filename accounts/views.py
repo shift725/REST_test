@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
@@ -33,7 +34,15 @@ class UserRegisterView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        try:
+            user = serializer.save()
+        except IntegrityError:
+            # 保險：serializer 的 UniqueValidator 通過後，若有並行請求搶先註冊，
+            # DB unique 限制會在此拋錯，改回 409 而不是 500。
+            return Response(
+                {'error': '帳號或 email 已被使用'},
+                status=status.HTTP_409_CONFLICT,
+            )
 
         # 註冊成功後自動回傳 token
         refresh = RefreshToken.for_user(user)

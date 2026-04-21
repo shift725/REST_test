@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import CustomUser
 
@@ -15,6 +16,18 @@ class UserSerializer(serializers.ModelSerializer):
 class UserRegisterSerializer(serializers.ModelSerializer):
     """使用者註冊序列化器"""
 
+    email = serializers.EmailField(
+        validators=[UniqueValidator(
+            queryset=CustomUser.objects.all(),
+            message='此 email 已被註冊'
+        )]
+    )
+    username = serializers.CharField(
+        validators=[UniqueValidator(
+            queryset=CustomUser.objects.all(),
+            message='此帳號已被使用'
+        )]
+    )
     password = serializers.CharField(
         write_only=True,
         min_length=8,
