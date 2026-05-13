@@ -29,12 +29,8 @@ python manage.py migrate --noinput
 echo "[entrypoint] collecting static files..."
 python manage.py collectstatic --noinput
 
-if [ -n "${DJANGO_SUPERUSER_EMAIL:-}" ] \
-    && [ -n "${DJANGO_SUPERUSER_USERNAME:-}" ] \
-    && [ -n "${DJANGO_SUPERUSER_PASSWORD:-}" ]; then
-    echo "[entrypoint] ensuring superuser ${DJANGO_SUPERUSER_EMAIL} exists..."
-    python manage.py createsuperuser --noinput || true
-fi
+echo "[entrypoint] ensuring admin superuser..."
+python manage.py ensure_superuser
 
 echo "[entrypoint] launching: $*"
 exec "$@"

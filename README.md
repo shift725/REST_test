@@ -29,7 +29,7 @@ cp .env.example .env
   docker run --rm python:3.12-slim python -c "import secrets; print(secrets.token_urlsafe(64))"
   ```
 - **`POSTGRES_PASSWORD`** — Postgres 密碼，請改成非預設值
-- **`DJANGO_SUPERUSER_PASSWORD`** — 自動建立的 admin 密碼（若三個 `DJANGO_SUPERUSER_*` 都填了，容器首次啟動會自動建立 superuser）
+- **`DJANGO_SUPERUSER_PASSWORD`** — 自動建立的 admin 密碼（若三個 `DJANGO_SUPERUSER_*` 都填了，容器首次啟動會由 `manage.py ensure_superuser` 建立帳號，並設定 `role='admin'` + `is_staff` + `is_superuser`；已存在的使用者會被冪等地補齊三個旗標，但密碼不會被覆蓋）
 
 ```bash
 # 3) 啟動（首次會 build image，約 2–3 分鐘）
