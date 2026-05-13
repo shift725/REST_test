@@ -1,4 +1,15 @@
 /venv/
-.idea
-db.sqlite3
+.idea/
+.claude/
 **/__pycache__/
+tasks/
+SPEC.md
+db.sqlite3
+
+# Local env / secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Static files collected at build time
+/staticfiles/
