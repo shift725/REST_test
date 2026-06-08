@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from .models import CustomUser
 
 
@@ -17,26 +18,15 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     """使用者註冊序列化器"""
 
     email = serializers.EmailField(
-        validators=[UniqueValidator(
-            queryset=CustomUser.objects.all(),
-            message='此 email 已被註冊'
-        )]
+        validators=[UniqueValidator(queryset=CustomUser.objects.all(), message='此 email 已被註冊')]
     )
     username = serializers.CharField(
-        validators=[UniqueValidator(
-            queryset=CustomUser.objects.all(),
-            message='此帳號已被使用'
-        )]
+        validators=[UniqueValidator(queryset=CustomUser.objects.all(), message='此帳號已被使用')]
     )
     password = serializers.CharField(
-        write_only=True,
-        min_length=8,
-        style={'input_type': 'password'}
+        write_only=True, min_length=8, style={'input_type': 'password'}
     )
-    password_confirm = serializers.CharField(
-        write_only=True,
-        style={'input_type': 'password'}
-    )
+    password_confirm = serializers.CharField(write_only=True, style={'input_type': 'password'})
 
     class Meta:
         model = CustomUser
@@ -44,9 +34,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError({
-                'password_confirm': '密碼不一致'
-            })
+            raise serializers.ValidationError({'password_confirm': '密碼不一致'})
         return attrs
 
     def create(self, validated_data):

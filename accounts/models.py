@@ -1,17 +1,13 @@
 # models.py
+import uuid_utils.compat as uuid
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-import uuid_utils.compat as uuid
 
 
 class UUIDv7Mixin(models.Model):
     """所有 Model 繼承此類別即可使用 UUIDv7 主鍵"""
 
-    id = models.UUIDField(
-        primary_key=True,
-        default=uuid.uuid7,
-        editable=False
-    )
+    id = models.UUIDField(primary_key=True, default=uuid.uuid7, editable=False)
 
     class Meta:
         abstract = True
@@ -29,7 +25,7 @@ class CustomUser(UUIDv7Mixin, AbstractUser):
             ('staff', '員工'),
             ('member', '會員'),
         ],
-        default='member'
+        default='member',
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

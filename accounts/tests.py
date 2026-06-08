@@ -2,13 +2,17 @@
 accounts app 單元測試
 
 執行方式：
-    python manage.py test accounts                          # 跑全部
-    python manage.py test accounts.tests.CustomUserModelTests  # 跑單一 class
-    python manage.py test accounts.tests.CustomUserModelTests.test_create_user_with_email  # 單一 method
+    # 跑全部
+    python manage.py test accounts
+    # 跑單一 class
+    python manage.py test accounts.tests.CustomUserModelTests
+    # 跑單一 method
+    python manage.py test accounts.tests.CustomUserModelTests.test_create_user_with_email
 
 每個 class 對應一個被測試的對象（model/view），class 內的每個 test_xxx
 都只測試一個明確的行為，命名格式建議：test_<情境>_<預期結果>。
 """
+
 import uuid
 
 from django.contrib.auth import get_user_model
@@ -74,16 +78,13 @@ class CustomUserModelTests(APITestCase):
 
     def test_email_must_be_unique(self):
         """email 設為 unique，重複建立應丟出例外"""
-        User.objects.create_user(
-            username='u1', email='dup@example.com', password='pass12345'
-        )
+        User.objects.create_user(username='u1', email='dup@example.com', password='pass12345')
 
         # assertRaises 用 with 區塊：區塊內的程式必須丟出指定例外
         from django.db import IntegrityError
+
         with self.assertRaises(IntegrityError):
-            User.objects.create_user(
-                username='u2', email='dup@example.com', password='pass12345'
-            )
+            User.objects.create_user(username='u2', email='dup@example.com', password='pass12345')
 
 
 # ------------------------------------------------------------
@@ -247,9 +248,7 @@ class LogoutAPITests(APITestCase):
 
     def test_logout_success_blacklists_refresh_token(self):
         """成功登出後，該 refresh token 應無法再用來換 access token"""
-        response = self.client.post(
-            self.url, {'refresh': str(self.refresh)}, format='json'
-        )
+        response = self.client.post(self.url, {'refresh': str(self.refresh)}, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['message'], '登出成功')
@@ -266,17 +265,13 @@ class LogoutAPITests(APITestCase):
 
     def test_logout_with_invalid_token_returns_400(self):
         """傳入無效字串應回 400"""
-        response = self.client.post(
-            self.url, {'refresh': 'this-is-not-a-jwt'}, format='json'
-        )
+        response = self.client.post(self.url, {'refresh': 'this-is-not-a-jwt'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_logout_without_authentication_returns_401(self):
         """未登入直接打 logout 應回 401（permission_classes = IsAuthenticated）"""
         self.client.force_authenticate(user=None)
-        response = self.client.post(
-            self.url, {'refresh': str(self.refresh)}, format='json'
-        )
+        response = self.client.post(self.url, {'refresh': str(self.refresh)}, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
@@ -318,11 +313,15 @@ class UserDetailAPITests(APITestCase):
 
     def setUp(self):
         self.member = User.objects.create_user(
-            username='mem', email='mem@example.com', password='pass12345',
+            username='mem',
+            email='mem@example.com',
+            password='pass12345',
             role='member',
         )
         self.admin = User.objects.create_superuser(
-            username='admin', email='admin@example.com', password='pass12345',
+            username='admin',
+            email='admin@example.com',
+            password='pass12345',
         )
         self.url = reverse('auth:user_detail', kwargs={'pk': self.member.pk})
 

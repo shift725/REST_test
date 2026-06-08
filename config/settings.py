@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
 
 import dj_database_url
 from decouple import Csv, config
@@ -138,9 +138,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.AllowAny',
-    ),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
 }
 
 # =============================================================================
@@ -150,23 +148,18 @@ SIMPLE_JWT = {
     # Token 有效期限
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-
     # 每次使用 refresh token 時是否輪換
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
-
     # 加密演算法
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,  # 使用 Django 的 SECRET_KEY
-
     # Token 類型
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-
     # Token payload 中的使用者識別欄位
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
-
     # Token 類別（可自訂）
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
 }

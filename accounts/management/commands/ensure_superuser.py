@@ -4,6 +4,7 @@
 容器啟動時由 docker/entrypoint.sh 呼叫；三個 env var 任一未設則完全跳過，
 讓本機不想自動建 admin 的人也能正常啟動。
 """
+
 import os
 
 from django.contrib.auth import get_user_model
@@ -36,9 +37,7 @@ class Command(BaseCommand):
         if created:
             user.set_password(password)
             user.save(update_fields=['password'])
-            self.stdout.write(self.style.SUCCESS(
-                f"Created superuser {email} (role=admin)"
-            ))
+            self.stdout.write(self.style.SUCCESS(f'Created superuser {email} (role=admin)'))
             return
 
         # 既有使用者：補齊 admin 旗標但不覆蓋密碼（避免 .env 改動意外重置線上密碼）
@@ -55,8 +54,6 @@ class Command(BaseCommand):
 
         if changed:
             user.save(update_fields=changed)
-            self.stdout.write(self.style.SUCCESS(
-                f"Upgraded {email}: {', '.join(changed)} updated"
-            ))
+            self.stdout.write(self.style.SUCCESS(f'Upgraded {email}: {", ".join(changed)} updated'))
         else:
-            self.stdout.write(f"Superuser {email} already correct; no change.")
+            self.stdout.write(f'Superuser {email} already correct; no change.')

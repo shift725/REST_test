@@ -1,16 +1,17 @@
 from django.db import IntegrityError
 from rest_framework import generics, status
-from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 from .models import CustomUser
 from .serializers import (
     CustomTokenObtainPairSerializer,
-    UserSerializer,
     UserRegisterSerializer,
+    UserSerializer,
 )
 
 
@@ -27,6 +28,7 @@ class UserRegisterView(generics.CreateAPIView):
         "phone": "0912345678"
     }
     """
+
     queryset = CustomUser.objects.all()
     serializer_class = UserRegisterSerializer
     # 清空 authentication_classes：避免使用者帶著過期/無效的舊 token 來註冊時，
@@ -50,14 +52,17 @@ class UserRegisterView(generics.CreateAPIView):
         # 註冊成功後自動回傳 token
         refresh = RefreshToken.for_user(user)
 
-        return Response({
-            'message': '註冊成功',
-            'user': UserSerializer(user).data,
-            'tokens': {
-                'access': str(refresh.access_token),
-                'refresh': str(refresh),
-            }
-        }, status=status.HTTP_201_CREATED)
+        return Response(
+            {
+                'message': '註冊成功',
+                'user': UserSerializer(user).data,
+                'tokens': {
+                    'access': str(refresh.access_token),
+                    'refresh': str(refresh),
+                },
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class UserListView(GenericAPIView):
@@ -118,6 +123,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         },
     }
     """
+
     serializer_class = CustomTokenObtainPairSerializer
     # 同 UserRegisterView：登入本身就是「還沒有 token」的場景，
     # 不該因為 header 裡殘留的過期 token 而被 JWTAuthentication 先擋下。
@@ -134,6 +140,7 @@ class LogoutView(APIView):
         "refresh": "<refresh_token>"
     }
     """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -143,7 +150,4 @@ class LogoutView(APIView):
             token.blacklist()  # 需要啟用 blacklist app
             return Response({'message': '登出成功'}, status=status.HTTP_200_OK)
         except Exception:
-            return Response(
-                {'error': '無效的 token'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({'error': '無效的 token'}, status=status.HTTP_400_BAD_REQUEST)

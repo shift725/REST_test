@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
 from .models import CustomUser
 
 
@@ -14,13 +15,19 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('id', 'email', 'password')}),
         ('個人資訊', {'fields': ('username', 'first_name', 'last_name', 'phone', 'role')}),
-        ('權限', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        (
+            '權限',
+            {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')},
+        ),
         ('時間戳', {'fields': ('last_login', 'date_joined', 'created_at', 'updated_at')}),
     )
 
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'username', 'password1', 'password2', 'role'),
-        }),
+        (
+            None,
+            {
+                'classes': ('wide',),
+                'fields': ('email', 'username', 'password1', 'password2', 'role'),
+            },
+        ),
     )
