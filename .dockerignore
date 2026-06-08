@@ -11,6 +11,11 @@ venv/
 *.pyd
 *.egg-info/
 
+# Dev tooling artifacts (lint / coverage) — not needed at runtime
+.ruff_cache/
+.coverage
+htmlcov/
+
 # Local dev / secrets
 .env
 .env.*
@@ -25,9 +30,11 @@ db.sqlite3
 
 # Project artifacts not needed at runtime
 tasks/
+docs/
 SPEC.md
 *.md
 !README.md
+requirements-dev.txt
 
 # Docker build context itself
 Dockerfile

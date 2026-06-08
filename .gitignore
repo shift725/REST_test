@@ -4,6 +4,7 @@
 **/__pycache__/
 tasks/
 SPEC.md
+docs/
 db.sqlite3
 
 # Local env / secrets — never commit
@@ -13,3 +14,8 @@ db.sqlite3
 
 # Static files collected at build time
 /staticfiles/
+
+# Dev tooling artifacts (ruff / coverage caches & reports)
+.coverage
+htmlcov/
+.ruff_cache/

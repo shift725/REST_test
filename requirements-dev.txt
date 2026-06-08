@@ -1,0 +1,9 @@
+# Development & CI-only dependencies.
+# 這些工具不會被裝進 runtime image：Dockerfile 只 `pip wheel -r requirements.txt`，
+# 所以 lint / coverage 工具留在這裡，不增加最終 image 體積。
+#
+# 安裝：pip install -r requirements-dev.txt   （會一併裝好 runtime 依賴）
+-r requirements.txt
+
+ruff==0.15.16
+coverage==7.14.1
